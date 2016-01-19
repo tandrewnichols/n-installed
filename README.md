@@ -10,11 +10,41 @@ Get a list of node binaries installed via n
 
 ## Summary
 
+`n-installed` exports a function that returns an object with a `node` property and an `io` property, where each is an array of binary version installed via [n](https://github.com/tj/n). For instance, on my machine, this function returns:
+
+```js
+{
+  node: ['0.10.41', '0.12.9', '4.2.4', '5.4.0'],
+  io: ['1.8.4', '2.5.0', '3.3.1']
+}
+```
+
 ## Usage
 
+`n-installed` has both synchronous and asynchronous modes. Just pass a callback for async.
 
+```js
+// Sync
+var installed = require('n-installed');
+var versions = installed();
 
-### Example
+// Async
+installed(function(err, versions) {
+
+});
+```
+
+This library uses the `N_PREFIX` environment variable to find binaries. If for some reason that would be unreliable in your environment, you can pass the location of the `n` install as the first parameter.
+
+```js
+// Sync
+var versions = installed('other/path/to/n');
+
+// Async
+installed('other/path/to/n', function(err, versions) {
+
+});
+```
 
 ## Contributing
 
