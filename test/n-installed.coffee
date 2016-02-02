@@ -3,7 +3,7 @@ sinon = require 'sinon'
 describe 'n-installed', ->
   Given -> @node = ['0.10.21', '0.12.4', '4.1.1']
   Given -> @io = ['1.2.3', '2.0.1', '3.1.1']
-  Given -> @sorted = ['0.10.21', '0.12.4', '1.2.3', '2.0.1', '3.1.1', '4.1.1']
+  Given -> @all = ['0.10.21', '0.12.4', '1.2.3', '2.0.1', '3.1.1', '4.1.1']
   Given -> @fs =
     readdir: sinon.stub()
     readdirSync: sinon.stub()
@@ -18,7 +18,10 @@ describe 'n-installed', ->
     describe 'sync', ->
       Given -> @fs.readdirSync.withArgs('nprefix/n/versions/node').returns @node
       Given -> @fs.readdirSync.withArgs('nprefix/n/versions/io').returns @io
-      Then -> @subject().should.eql @sorted
+      Then -> @subject().should.eql
+        node: @node
+        io: @io
+        all: @all
 
     describe 'async', ->
       Given -> @fs.readdir.withArgs('nprefix/n/versions/node', sinon.match.func).callsArgWith 1, null, @node
@@ -27,6 +30,7 @@ describe 'n-installed', ->
       Then -> @versions.should.eql
         node: @node
         io: @io
+        all: @all
 
   context 'with N_PREFIX unset but with a path passed in', ->
     Given -> @nprefix = process.env.N_PREFIX
@@ -38,7 +42,10 @@ describe 'n-installed', ->
     describe 'sync', ->
       Given -> @fs.readdirSync.withArgs('nprefix/n/versions/node').returns @node
       Given -> @fs.readdirSync.withArgs('nprefix/n/versions/io').returns @io
-      Then -> @subject('nprefix').should.eql @sorted
+      Then -> @subject('nprefix').should.eql
+        node: @node
+        io: @io
+        all: @all
 
     describe 'async', ->
       Given -> @fs.readdir.withArgs('nprefix/n/versions/node', sinon.match.func).callsArgWith 1, null, @node
@@ -47,6 +54,7 @@ describe 'n-installed', ->
       Then -> @versions.should.eql
         node: @node
         io: @io
+        all: @all
 
   context 'with N_PREFIX unset and no path passed in', ->
     Given -> @nprefix = process.env.N_PREFIX
@@ -59,9 +67,15 @@ describe 'n-installed', ->
 
     describe 'sync', ->
       Then ->
-        @subject().should.eql []
+        @subject().should.eql
+          node: []
+          io: []
+          all: []
         console.log.called.should.be.true()
 
     describe 'async', ->
       When (done) -> @subject( (err, @versions) => done() )
-      Then -> @versions.should.eql []
+      Then -> @versions.should.eql
+        node: []
+        io: []
+        all: []
