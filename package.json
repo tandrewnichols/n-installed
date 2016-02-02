@@ -1,7 +1,7 @@
 {
   "name": "n-installed",
   "description": "Get a list of node binaries installed via n",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "main": "lib/n-installed.js",
   "scripts": {
     "test": "gulp"
